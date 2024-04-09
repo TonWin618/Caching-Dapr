@@ -39,9 +39,7 @@ namespace Microsoft.Extensions.Caching.Dapr
         {
             ArgumentNullThrowHelper.ThrowIfNull(key);
 
-            var asyncTask = GetAsync(key);
-            asyncTask.ConfigureAwait(false);
-            return asyncTask.Result;
+            return GetAsync(key).GetAwaiter().GetResult();
         }
 
         public async Task<byte[]?> GetAsync(string key, CancellationToken token = default)
@@ -67,7 +65,7 @@ namespace Microsoft.Extensions.Caching.Dapr
             if (extendedValue.Value.IsSlidingExpiration)
             {
                 var options = CacheTtlCalculateHelper.ToSlidingExpirationOption(extendedValue.Value.TtlInSeconds);
-                await SetAsync(key, [], options);
+                await SetAsync(key, [], options, token);
             }
 
             return realValue;
@@ -77,8 +75,7 @@ namespace Microsoft.Extensions.Caching.Dapr
         {
             ArgumentNullThrowHelper.ThrowIfNull(key);
 
-            var asyncTask = RefreshAsync(key);
-            asyncTask.ConfigureAwait(false);
+            RefreshAsync(key).GetAwaiter().GetResult();
         }
 
         public async Task RefreshAsync(string key, CancellationToken token = default)
@@ -101,8 +98,7 @@ namespace Microsoft.Extensions.Caching.Dapr
         {
             ArgumentNullThrowHelper.ThrowIfNull(key);
 
-            var asyncTask = RemoveAsync(key);
-            asyncTask.ConfigureAwait(false);
+            RemoveAsync(key).GetAwaiter().GetResult();
         }
 
         public async Task RemoveAsync(string key, CancellationToken token = default)
@@ -127,9 +123,7 @@ namespace Microsoft.Extensions.Caching.Dapr
             ArgumentNullThrowHelper.ThrowIfNull(value);
             ArgumentNullThrowHelper.ThrowIfNull(options);
             
-            var asyncTask = SetAsync(key,value,options);
-
-            asyncTask.ConfigureAwait(false);
+            SetAsync(key, value, options).GetAwaiter().GetResult();
         }
 
         public async Task SetAsync(string key, byte[] value, DistributedCacheEntryOptions options, CancellationToken token = default)
@@ -137,7 +131,7 @@ namespace Microsoft.Extensions.Caching.Dapr
             ArgumentNullThrowHelper.ThrowIfNull(key);
             ArgumentNullThrowHelper.ThrowIfNull(value);
             ArgumentNullThrowHelper.ThrowIfNull(options);
-
+            
             token.ThrowIfCancellationRequested();
             
             if (await _client.CheckHealthAsync(token))
