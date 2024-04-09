@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "Microsoft.Extensions.Caching.Dapr.Test": {
+      "commandName": "Project"
+    }
+  }
+}
