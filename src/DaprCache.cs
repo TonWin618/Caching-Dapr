@@ -1,5 +1,4 @@
 ﻿using Dapr.Client;
-using Google.Protobuf;
 using Microsoft.Extensions.Caching.Dapr.Shared;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
@@ -51,19 +50,18 @@ namespace Microsoft.Extensions.Caching.Dapr
 
             token.ThrowIfCancellationRequested();
 
-            var extendedValue = await _client.GetStateAsync<ByteString>(_options.StoreName, key, null, null, token);
-            var extendedValueString  = extendedValue.ToString();
+            var extendedValue = await _client.GetStateAsync<ExtendedCacheValue?>(_options.StoreName, key, null, null, token);
 
-            if(extendedValueString == null)
+            if(extendedValue.HasValue == false)
             {
                 return null;
             }
 
-            var (isSlidingExpiration, ttlInSeconds, realValue) = CacheSerializationHelper.DeserializeCacheValue(extendedValueString);
+            var realValue = Convert.FromBase64String(extendedValue.Value.ValueBase64);
 
-            if (isSlidingExpiration)
+            if (extendedValue.Value.IsSlidingExpiration)
             {
-                var options = CacheTtlCalculateHelper.ToSlidingExpirationOption(ttlInSeconds);
+                var options = CacheTtlCalculateHelper.ToSlidingExpirationOption(extendedValue.Value.TtlInSeconds);
                 await SetAsync(key, [], options);
             }
 
@@ -140,12 +138,14 @@ namespace Microsoft.Extensions.Caching.Dapr
             if (await _client.CheckHealthAsync(token))
             {
                 var (isSlidingExpiration, ttl) = CacheTtlCalculateHelper.CalculateTtlSeconds(options);
-                var valueString = CacheSerializationHelper.SerilizeCacheValue(isSlidingExpiration, ttl, value);
+
+                string valueBase64 = Convert.ToBase64String(value);
+                var extendedCacheValue = new ExtendedCacheValue(isSlidingExpiration, ttl, valueBase64);
 
                 var metadata = new Dictionary<string, string>();
                 metadata.Add("ttlInSeconds", ttl.ToString());
 
-                await _client.SaveStateAsync(_options.StoreName, key, valueString, null, metadata, token);
+                await _client.SaveStateAsync(_options.StoreName, key, extendedCacheValue, null, metadata, token);
             }
             else
             {
