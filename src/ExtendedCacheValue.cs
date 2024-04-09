@@ -13,7 +13,6 @@ namespace Microsoft.Extensions.Caching.Dapr
             IsSlidingExpiration = isSlidingExpiration;
             TtlInSeconds = ttlInSeconds;
             ValueBase64 = valueBase64;
-            Debug.
         }
     }
 }
