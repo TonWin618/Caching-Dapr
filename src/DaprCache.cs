@@ -138,11 +138,20 @@ namespace Microsoft.Extensions.Caching.Dapr
             {
                 var (isSlidingExpiration, ttl) = CacheTtlCalculateHelper.CalculateTtlSeconds(options);
 
+                if (ttl == 0)
+                {
+                    return;
+                }
+
                 string valueBase64 = Convert.ToBase64String(value);
                 var extendedCacheValue = new ExtendedCacheValue(isSlidingExpiration, ttl, valueBase64);
 
                 var metadata = new Dictionary<string, string>();
-                metadata.Add("ttlInSeconds", ttl.ToString());
+
+                if (ttl != -1)
+                {
+                    metadata.Add("ttlInSeconds", ttl.ToString());
+                }
 
                 await _client.SaveStateAsync(_options.StoreName, key, extendedCacheValue, null, metadata, token);
             }

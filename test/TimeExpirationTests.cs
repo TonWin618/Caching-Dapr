@@ -18,7 +18,7 @@ public class TimeExpirationTests
             cache.Set(key, value, new DistributedCacheEntryOptions().SetAbsoluteExpiration(expected));
         });
 
-        Assert.Equal("The absolute expiration value must be in the future.", ex.Message);
+        Assert.StartsWith("The absolute expiration value must be in the future.", ex.Message);
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class TimeExpirationTests
             cache.Set(key, value, new DistributedCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(-1)));
         });
 
-        Assert.Equal("The relative expiration value must be positive.", ex.Message);
+        Assert.StartsWith("The relative expiration value must be positive.", ex.Message);
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class TimeExpirationTests
             cache.Set(key, value, new DistributedCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.Zero));
         });
 
-        Assert.Equal("The relative expiration value must be positive.", ex.Message);
+        Assert.StartsWith("The relative expiration value must be positive.", ex.Message);
     }
 
     [Fact]
@@ -130,7 +130,7 @@ public class TimeExpirationTests
             cache.Set(key, value, new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(-1)));
         });
 
-        Assert.Equal("The sliding expiration value must be positive.", ex.Message);
+        Assert.StartsWith("The sliding expiration value must be positive.", ex.Message);
     }
 
     [Fact]
@@ -145,7 +145,7 @@ public class TimeExpirationTests
             cache.Set(key, value, new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.Zero));
         });
 
-        Assert.Equal("The sliding expiration value must be positive.", ex.Message);
+        Assert.StartsWith("The sliding expiration value must be positive.", ex.Message);
     }
 
     [Fact]

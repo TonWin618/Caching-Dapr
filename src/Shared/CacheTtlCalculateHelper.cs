@@ -9,8 +9,15 @@ namespace Microsoft.Extensions.Caching.Dapr.Shared
             int ttl;
             if (options.AbsoluteExpiration.HasValue)
             {
-                DateTimeOffset now = DateTimeOffset.Now;
-                ttl = (int)(options.AbsoluteExpiration.Value - now).TotalSeconds;
+                DateTimeOffset now = DateTimeOffset.UtcNow;
+                if (options.AbsoluteExpiration.HasValue && options.AbsoluteExpiration.Value.UtcDateTime <= now)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        nameof(DistributedCacheEntryOptions.AbsoluteExpiration),
+                        options.AbsoluteExpiration.Value,
+                        "The absolute expiration value must be in the future.");
+                }
+                ttl = (int)(options.AbsoluteExpiration.Value.UtcDateTime - now).TotalSeconds;
                 return (false, ttl);
             }
             else if (options.AbsoluteExpirationRelativeToNow.HasValue)
