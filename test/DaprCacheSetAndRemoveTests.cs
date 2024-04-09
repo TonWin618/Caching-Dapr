@@ -9,7 +9,7 @@ public class DaprCacheSetAndRemoveTests
     [Fact]
     public void GetMissingKeyReturnsNull()
     {
-        var cache = DaprTestConfig.CreateCacheInstance(GetType().Name);
+        var cache = DaprTestConfig.CreateCacheInstance();
         string key = "non-existent-key";
 
         var result = cache.Get(key);
@@ -19,7 +19,7 @@ public class DaprCacheSetAndRemoveTests
     [Fact]
     public void SetAndGetReturnsObject()
     {
-        var cache = DaprTestConfig.CreateCacheInstance(GetType().Name);
+        var cache = DaprTestConfig.CreateCacheInstance();
         var value = new byte[1];
         string key = "myKey";
 
@@ -32,7 +32,7 @@ public class DaprCacheSetAndRemoveTests
     [Fact]
     public void SetAndGetWorksWithCaseSensitiveKeys()
     {
-        var cache = DaprTestConfig.CreateCacheInstance(GetType().Name);
+        var cache = DaprTestConfig.CreateCacheInstance();
         var value = new byte[1];
         string key1 = "myKey";
         string key2 = "Mykey";
@@ -49,7 +49,7 @@ public class DaprCacheSetAndRemoveTests
     [Fact]
     public void SetAlwaysOverwrites()
     {
-        var cache = DaprTestConfig.CreateCacheInstance(GetType().Name);
+        var cache = DaprTestConfig.CreateCacheInstance();
         var value1 = new byte[1] { 1 };
         string key = "myKey";
 
@@ -66,7 +66,7 @@ public class DaprCacheSetAndRemoveTests
     [Fact]
     public void RemoveRemoves()
     {
-        var cache = DaprTestConfig.CreateCacheInstance(GetType().Name);
+        var cache = DaprTestConfig.CreateCacheInstance();
         var value = new byte[1];
         string key = "myKey";
 
@@ -82,7 +82,7 @@ public class DaprCacheSetAndRemoveTests
     [Fact]
     public void SetNullValueThrows()
     {
-        var cache = DaprTestConfig.CreateCacheInstance(GetType().Name);
+        var cache = DaprTestConfig.CreateCacheInstance();
         byte[] value = null;
         string key = "myKey";
 
@@ -92,7 +92,7 @@ public class DaprCacheSetAndRemoveTests
     [Fact]
     public void SetGetEmptyNonNullBuffer()
     {
-        var cache = DaprTestConfig.CreateCacheInstance(GetType().Name);
+        var cache = DaprTestConfig.CreateCacheInstance();
         var key = Me();
         cache.Remove(key); // known state
         Assert.Null(cache.Get(key)); // expect null
@@ -106,7 +106,7 @@ public class DaprCacheSetAndRemoveTests
     [Fact]
     public async Task SetGetEmptyNonNullBufferAsync()
     {
-        var cache = DaprTestConfig.CreateCacheInstance(GetType().Name);
+        var cache = DaprTestConfig.CreateCacheInstance();
         var key = Me();
         await cache.RemoveAsync(key); // known state
         Assert.Null(await cache.GetAsync(key)); // expect null
@@ -123,7 +123,7 @@ public class DaprCacheSetAndRemoveTests
     [InlineData("abc")]
     public void SetGetNonNullString(string payload)
     {
-        var cache = DaprTestConfig.CreateCacheInstance(GetType().Name);
+        var cache = DaprTestConfig.CreateCacheInstance();
         var key = Me();
         cache.Remove(key); // known state
         Assert.Null(cache.Get(key)); // expect null
@@ -146,7 +146,7 @@ public class DaprCacheSetAndRemoveTests
     [InlineData("abc def ghi jkl mno pqr stu vwx yz!")]
     public async Task SetGetNonNullStringAsync(string payload)
     {
-        var cache = DaprTestConfig.CreateCacheInstance(GetType().Name);
+        var cache = DaprTestConfig.CreateCacheInstance();
         var key = Me();
         await cache.RemoveAsync(key); // known state
         Assert.Null(await cache.GetAsync(key)); // expect null

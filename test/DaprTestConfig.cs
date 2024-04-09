@@ -4,11 +4,11 @@ namespace Microsoft.Extensions.Caching.Dapr.Test;
 
 internal class DaprTestConfig
 {
-    public static IDistributedCache CreateCacheInstance(string storeName)
+    public static IDistributedCache CreateCacheInstance()
     {
         return new DaprCache(new DaprCacheOptions()
         {
-            StoreName = storeName,
+            StoreName = "storeName",
             DaprEndPoint = "http://localhost:3500"
         });
     }
