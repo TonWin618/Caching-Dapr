@@ -57,6 +57,11 @@ namespace Microsoft.Extensions.Caching.Dapr
                 return null;
             }
 
+            if(extendedValue.Value.ValueBase64 == null)
+            {
+                return null;
+            }
+
             var realValue = Convert.FromBase64String(extendedValue.Value.ValueBase64);
 
             if (extendedValue.Value.IsSlidingExpiration)
