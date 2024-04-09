@@ -65,7 +65,7 @@ namespace Microsoft.Extensions.Caching.Dapr
             if (extendedValue.Value.IsSlidingExpiration)
             {
                 var options = CacheTtlCalculateHelper.ToSlidingExpirationOption(extendedValue.Value.TtlInSeconds);
-                await SetAsync(key, [], options, token);
+                await SetAsync(key, Convert.FromBase64String(extendedValue.Value.ValueBase64), options, token);
             }
 
             return realValue;
