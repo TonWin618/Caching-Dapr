@@ -21,7 +21,7 @@ public class DaprCacheSetAndRemoveTests
     {
         var cache = DaprTestConfig.CreateCacheInstance();
         var value = new byte[1];
-        string key = "myKey";
+        string key = Me();
 
         cache.Set(key, value);
 
@@ -34,8 +34,8 @@ public class DaprCacheSetAndRemoveTests
     {
         var cache = DaprTestConfig.CreateCacheInstance();
         var value = new byte[1];
-        string key1 = "myKey";
-        string key2 = "Mykey";
+        string key1 = Me().ToLower();
+        string key2 = Me().ToUpper();
 
         cache.Set(key1, value);
 
@@ -51,7 +51,7 @@ public class DaprCacheSetAndRemoveTests
     {
         var cache = DaprTestConfig.CreateCacheInstance();
         var value1 = new byte[1] { 1 };
-        string key = "myKey";
+        string key = Me();
 
         cache.Set(key, value1);
         var result = cache.Get(key);
@@ -68,7 +68,7 @@ public class DaprCacheSetAndRemoveTests
     {
         var cache = DaprTestConfig.CreateCacheInstance();
         var value = new byte[1];
-        string key = "myKey";
+        string key = Me();
 
         cache.Set(key, value);
         var result = cache.Get(key);
@@ -84,7 +84,7 @@ public class DaprCacheSetAndRemoveTests
     {
         var cache = DaprTestConfig.CreateCacheInstance();
         byte[] value = null;
-        string key = "myKey";
+        string key = Me();
 
         Assert.Throws<ArgumentNullException>(() => cache.Set(key, value));
     }

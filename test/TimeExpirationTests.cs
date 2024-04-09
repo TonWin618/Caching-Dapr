@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
+using System.Runtime.CompilerServices;
 
 namespace Microsoft.Extensions.Caching.Dapr.Test;
 
@@ -8,7 +9,7 @@ public class TimeExpirationTests
     public void AbsoluteExpirationInThePastThrows()
     {
         var cache = DaprTestConfig.CreateCacheInstance();
-        var key = "myKey";
+        var key = Me();
         var value = new byte[1];
 
         var expected = DateTimeOffset.Now - TimeSpan.FromMinutes(1);
@@ -25,7 +26,7 @@ public class TimeExpirationTests
     public void AbsoluteExpirationExpires()
     {
         var cache = DaprTestConfig.CreateCacheInstance();
-        var key = "myKey";
+        var key = Me();
         var value = new byte[1];
 
         cache.Set(key, value, new DistributedCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(1)));
@@ -46,7 +47,7 @@ public class TimeExpirationTests
     public void AbsoluteSubSecondExpirationExpiresImmidately()
     {
         var cache = DaprTestConfig.CreateCacheInstance();
-        var key = "myKey";
+        var key = Me();
         var value = new byte[1];
 
         cache.Set(key, value, new DistributedCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(0.25)));
@@ -59,7 +60,7 @@ public class TimeExpirationTests
     public void NegativeRelativeExpirationThrows()
     {
         var cache = DaprTestConfig.CreateCacheInstance();
-        var key = "myKey";
+        var key = Me();
         var value = new byte[1];
 
         var ex = Assert.Throws<ArgumentOutOfRangeException>(() =>
@@ -74,7 +75,7 @@ public class TimeExpirationTests
     public void ZeroRelativeExpirationThrows()
     {
         var cache = DaprTestConfig.CreateCacheInstance();
-        var key = "myKey";
+        var key = Me();
         var value = new byte[1];
 
         var ex = Assert.Throws<ArgumentOutOfRangeException>(() =>
@@ -89,7 +90,7 @@ public class TimeExpirationTests
     public void RelativeExpirationExpires()
     {
         var cache = DaprTestConfig.CreateCacheInstance();
-        var key = "myKey";
+        var key = Me();
         var value = new byte[1];
 
         cache.Set(key, value, new DistributedCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(1)));
@@ -109,7 +110,7 @@ public class TimeExpirationTests
     public void RelativeSubSecondExpirationExpiresImmediately()
     {
         var cache = DaprTestConfig.CreateCacheInstance();
-        var key = "myKey";
+        var key = Me();
         var value = new byte[1];
 
         cache.Set(key, value, new DistributedCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(0.25)));
@@ -122,7 +123,7 @@ public class TimeExpirationTests
     public void NegativeSlidingExpirationThrows()
     {
         var cache = DaprTestConfig.CreateCacheInstance();
-        var key = "myKey";
+        var key = Me();
         var value = new byte[1];
 
         var ex = Assert.Throws<ArgumentOutOfRangeException>(() =>
@@ -137,7 +138,7 @@ public class TimeExpirationTests
     public void ZeroSlidingExpirationThrows()
     {
         var cache = DaprTestConfig.CreateCacheInstance();
-        var key = "myKey";
+        var key = Me();
         var value = new byte[1];
 
         var ex = Assert.Throws<ArgumentOutOfRangeException>(() =>
@@ -152,7 +153,7 @@ public class TimeExpirationTests
     public void SlidingExpirationExpiresIfNotAccessed()
     {
         var cache = DaprTestConfig.CreateCacheInstance();
-        var key = "myKey";
+        var key = Me();
         var value = new byte[1];
 
         cache.Set(key, value, new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(1)));
@@ -170,7 +171,7 @@ public class TimeExpirationTests
     public void SlidingSubSecondExpirationExpiresImmediately()
     {
         var cache = DaprTestConfig.CreateCacheInstance();
-        var key = "myKey";
+        var key = Me();
         var value = new byte[1];
 
         cache.Set(key, value, new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(0.25)));
@@ -183,7 +184,7 @@ public class TimeExpirationTests
     public void SlidingExpirationRenewedByAccess()
     {
         var cache = DaprTestConfig.CreateCacheInstance();
-        var key = "myKey";
+        var key = Me();
         var value = new byte[1];
 
         cache.Set(key, value, new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(1)));
@@ -208,7 +209,7 @@ public class TimeExpirationTests
     public void SlidingExpirationRenewedByAccessUntilAbsoluteExpiration()
     {
         var cache = DaprTestConfig.CreateCacheInstance();
-        var key = "myKey";
+        var key = Me();
         var value = new byte[1];
 
         cache.Set(key, value, new DistributedCacheEntryOptions()
@@ -231,4 +232,6 @@ public class TimeExpirationTests
         result = cache.Get(key);
         Assert.Null(result);
     }
+
+    private static string Me([CallerMemberName] string caller = "") => caller;
 }
