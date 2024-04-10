@@ -27,11 +27,15 @@ namespace Microsoft.Extensions.Caching.Dapr
 
             _options = optionsAccessor.Value;
             ArgumentNullThrowHelper.ThrowIfNull(_options.StoreName);
-            ArgumentNullThrowHelper.ThrowIfNull(_options.DaprEndPoint);
+            ArgumentNullThrowHelper.ThrowIfNull(_options.HttpEndPoint);
 
             _logger = logger;
 
-            var builder = new DaprClientBuilder().UseHttpEndpoint(_options.DaprEndPoint);
+            var builder = new DaprClientBuilder();
+            if(_options.HttpEndPoint != null)
+            {
+                builder.UseHttpEndpoint(_options.HttpEndPoint);
+            }
             _client = builder.Build();
         }
 
@@ -62,6 +66,7 @@ namespace Microsoft.Extensions.Caching.Dapr
 
             var realValue = Convert.FromBase64String(extendedValue.Value.ValueBase64);
 
+            //If a cache entry uses a sliding expiration time, reset its time-to-live
             if (extendedValue.Value.IsSlidingExpiration)
             {
                 var options = CacheTtlCalculateHelper.ToSlidingExpirationOption(extendedValue.Value.TtlInSeconds);
@@ -138,6 +143,7 @@ namespace Microsoft.Extensions.Caching.Dapr
             {
                 var (isSlidingExpiration, ttl) = CacheTtlCalculateHelper.CalculateTtlSeconds(options);
 
+                //If the lifetime is 0, the cache entry will not be set.
                 if (ttl == 0)
                 {
                     return;
@@ -148,6 +154,7 @@ namespace Microsoft.Extensions.Caching.Dapr
 
                 var metadata = new Dictionary<string, string>();
 
+                //A time-to-live of -1 means that the cache entry will never expire
                 if (ttl != -1)
                 {
                     metadata.Add("ttlInSeconds", ttl.ToString());

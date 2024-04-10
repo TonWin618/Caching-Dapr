@@ -9,7 +9,7 @@ internal class DaprTestConfig
         return new DaprCache(new DaprCacheOptions()
         {
             StoreName = "statestore",
-            DaprEndPoint = "http://localhost:3500"
+            HttpEndPoint = "http://localhost:3500"
         });
     }
 }
