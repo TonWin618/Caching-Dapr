@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Caching.Dapr;
-using Microsoft.Extensions.Caching.Dapr.Shared;
-using Microsoft.Extensions.Caching.Distributed;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.DependencyInjection;
+using TonWinPkg.Extensions.Caching.Dapr.Shared;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace TonWinPkg.Extensions.Caching.Dapr;
 
 public static class StackExchangeRedisCacheServiceCollectionExtensions
 {

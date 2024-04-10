@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using TonWinPkg.Extensions.Caching.Dapr;
+using Microsoft.Extensions.Caching.Distributed;
 
-namespace Microsoft.Extensions.Caching.Dapr.Test;
+namespace TonWinPkg.Extensions.Caching.Dapr.Test;
 
 internal class DaprTestConfig
 {

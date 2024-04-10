@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace Microsoft.Extensions.Caching.Dapr.Shared
+namespace TonWinPkg.Extensions.Caching.Dapr.Shared
 {
     internal static partial class ArgumentNullThrowHelper
     {
@@ -9,7 +9,7 @@ namespace Microsoft.Extensions.Caching.Dapr.Shared
         /// <param name="argument">The reference type argument to validate as non-null.</param>
         /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
         public static void ThrowIfNull(
-            [NotNull] object? argument, 
+            [NotNull] object? argument,
             [CallerArgumentExpression("argument")] string? paramName = null)
         {
             ArgumentNullException.ThrowIfNull(argument, paramName);

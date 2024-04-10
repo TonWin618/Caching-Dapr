@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Microsoft.Extensions.Caching.Dapr.Test;
+namespace TonWinPkg.Extensions.Caching.Dapr.Test;
 
 public class DaprCacheSetAndRemoveTests
 {

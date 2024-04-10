@@ -1,10 +1,11 @@
 ﻿using Dapr.Client;
-using Microsoft.Extensions.Caching.Dapr.Shared;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
+using TonWinPkg.Extensions.Caching.Dapr.Shared;
 
-namespace Microsoft.Extensions.Caching.Dapr
+namespace TonWinPkg.Extensions.Caching.Dapr
 {
     public class DaprCache : IDistributedCache
     {
@@ -15,12 +16,12 @@ namespace Microsoft.Extensions.Caching.Dapr
         private readonly ILogger _logger;
 
         public DaprCache(IOptions<DaprCacheOptions> optionsAccessor)
-            : this(optionsAccessor, Logging.Abstractions.NullLoggerFactory.Instance.CreateLogger<DaprCache>())
+            : this(optionsAccessor, NullLoggerFactory.Instance.CreateLogger<DaprCache>())
         {
 
         }
 
-        public DaprCache(IOptions<DaprCacheOptions> optionsAccessor, ILogger logger) 
+        public DaprCache(IOptions<DaprCacheOptions> optionsAccessor, ILogger logger)
         {
             ArgumentNullThrowHelper.ThrowIfNull(optionsAccessor);
             ArgumentNullThrowHelper.ThrowIfNull(logger);
@@ -32,7 +33,7 @@ namespace Microsoft.Extensions.Caching.Dapr
             _logger = logger;
 
             var builder = new DaprClientBuilder();
-            if(_options.HttpEndPoint != null)
+            if (_options.HttpEndPoint != null)
             {
                 builder.UseHttpEndpoint(_options.HttpEndPoint);
             }
@@ -54,12 +55,12 @@ namespace Microsoft.Extensions.Caching.Dapr
 
             var extendedValue = await _client.GetStateAsync<ExtendedCacheValue?>(_options.StoreName, key, null, null, token);
 
-            if(extendedValue.HasValue == false)
+            if (extendedValue.HasValue == false)
             {
                 return null;
             }
 
-            if(extendedValue.Value.ValueBase64 == null)
+            if (extendedValue.Value.ValueBase64 == null)
             {
                 return null;
             }
@@ -114,7 +115,7 @@ namespace Microsoft.Extensions.Caching.Dapr
 
             if (await _client.CheckHealthAsync(token))
             {
-                await _client.DeleteStateAsync(_options.StoreName, key,null,null,token);
+                await _client.DeleteStateAsync(_options.StoreName, key, null, null, token);
             }
             else
             {
@@ -127,7 +128,7 @@ namespace Microsoft.Extensions.Caching.Dapr
             ArgumentNullThrowHelper.ThrowIfNull(key);
             ArgumentNullThrowHelper.ThrowIfNull(value);
             ArgumentNullThrowHelper.ThrowIfNull(options);
-            
+
             SetAsync(key, value, options).GetAwaiter().GetResult();
         }
 
@@ -136,9 +137,9 @@ namespace Microsoft.Extensions.Caching.Dapr
             ArgumentNullThrowHelper.ThrowIfNull(key);
             ArgumentNullThrowHelper.ThrowIfNull(value);
             ArgumentNullThrowHelper.ThrowIfNull(options);
-            
+
             token.ThrowIfCancellationRequested();
-            
+
             if (await _client.CheckHealthAsync(token))
             {
                 var (isSlidingExpiration, ttl) = CacheTtlCalculateHelper.CalculateTtlSeconds(options);

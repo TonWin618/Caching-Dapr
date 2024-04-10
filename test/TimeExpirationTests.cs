@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using System.Runtime.CompilerServices;
 
-namespace Microsoft.Extensions.Caching.Dapr.Test;
+namespace TonWinPkg.Extensions.Caching.Dapr.Test;
 
 public class TimeExpirationTests
 {
@@ -34,7 +34,7 @@ public class TimeExpirationTests
         byte[] result = cache.Get(key);
         Assert.Equal(value, result);
 
-        for (int i = 0; i < 4 && (result != null); i++)
+        for (int i = 0; i < 4 && result != null; i++)
         {
             Thread.Sleep(TimeSpan.FromSeconds(0.5));
             result = cache.Get(key);
@@ -98,7 +98,7 @@ public class TimeExpirationTests
         var result = cache.Get(key);
         Assert.Equal(value, result);
 
-        for (int i = 0; i < 4 && (result != null); i++)
+        for (int i = 0; i < 4 && result != null; i++)
         {
             Thread.Sleep(TimeSpan.FromSeconds(0.5));
             result = cache.Get(key);

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 
-namespace Microsoft.Extensions.Caching.Dapr
+namespace TonWinPkg.Extensions.Caching.Dapr
 {
-    public class DaprCacheOptions: IOptions<DaprCacheOptions>
+    public class DaprCacheOptions : IOptions<DaprCacheOptions>
     {
         /// <summary>
         /// Name of the State Store Component.

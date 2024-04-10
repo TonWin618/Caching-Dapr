@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <Authors>TonWin</Authors>
+    <PackageIcon>dapr.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl></PackageProjectUrl>
+    <Description>Implemented Microsoft.Extensions.Caching.Abstractions using Dapr's state store.</Description>
+    <RepositoryUrl>https://github.com/TonWin618/Caching-Dapr</RepositoryUrl>
+    <RepositoryType></RepositoryType>
+    <PackageTags>Dapr DistributedCache Caching Cache</PackageTags>
+    <Version>1.0.1-alpha</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\Download\dapr.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapr.Client" Version="1.13.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
+  </ItemGroup>
+
+</Project>

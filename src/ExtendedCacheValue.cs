@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Microsoft.Extensions.Caching.Dapr
+namespace TonWinPkg.Extensions.Caching.Dapr
 {
     internal struct ExtendedCacheValue
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 
-namespace Microsoft.Extensions.Caching.Dapr.Shared
+namespace TonWinPkg.Extensions.Caching.Dapr.Shared
 {
     internal static class CacheTtlCalculateHelper
     {
