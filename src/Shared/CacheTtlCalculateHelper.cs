@@ -4,6 +4,12 @@ namespace Microsoft.Extensions.Caching.Dapr.Shared
 {
     internal static class CacheTtlCalculateHelper
     {
+        /// <summary>
+        /// Calculated as time to live based on the cache entry option
+        /// </summary>
+        /// <param name="options">Distributed Cache Entry Options</param>
+        /// <returns>(isSlidingExpiration, time-to-live)</returns>
+        /// <exception cref="ArgumentOutOfRangeException">The absolute expiration value must be in the future.</exception>
         internal static (bool, int) CalculateTtlSeconds(DistributedCacheEntryOptions options)
         {
             int ttl;
