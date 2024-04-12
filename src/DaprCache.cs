@@ -68,10 +68,26 @@ namespace TonWinPkg.Extensions.Caching.Dapr
             var realValue = Convert.FromBase64String(extendedValue.Value.ValueBase64);
 
             //If a cache entry uses a sliding expiration time, reset its time-to-live
-            if (extendedValue.Value.IsSlidingExpiration)
+            if (extendedValue.Value.SlidingTtl != -1)
             {
-                var options = CacheTtlCalculateHelper.ToSlidingExpirationOption(extendedValue.Value.TtlInSeconds);
-                await SetAsync(key, Convert.FromBase64String(extendedValue.Value.ValueBase64), options, token);
+                int cacheTtl = 0;
+
+                if(extendedValue.Value.ExpirationTime.HasValue 
+                    && extendedValue.Value.ExpirationTime > DateTimeOffset.UtcNow)
+                {
+                    cacheTtl = (int)(extendedValue.Value.ExpirationTime - DateTimeOffset.UtcNow).Value.TotalSeconds;
+                }
+
+                cacheTtl = Math.Min(extendedValue.Value.SlidingTtl, cacheTtl);
+
+                if(cacheTtl > 0)
+                {
+                    var options = new DistributedCacheEntryOptions()
+                    {
+                        SlidingExpiration = TimeSpan.FromSeconds(cacheTtl)
+                    };
+                    await SetAsync(key, Convert.FromBase64String(extendedValue.Value.ValueBase64), options, token);
+                }
             }
 
             return realValue;
@@ -142,24 +158,15 @@ namespace TonWinPkg.Extensions.Caching.Dapr
 
             if (await _client.CheckHealthAsync(token))
             {
-                var (isSlidingExpiration, ttl) = CacheTtlCalculateHelper.CalculateTtlSeconds(options);
-
-                //If the lifetime is 0, the cache entry will not be set.
-                if (ttl == 0)
-                {
-                    return;
-                }
-
+                //Adding extra information to the value of a cache entry.
+                var (cacheTtl,expirationTime, slidingTtl) = CacheTtlCalculateHelper.Calculate(options);
                 string valueBase64 = Convert.ToBase64String(value);
-                var extendedCacheValue = new ExtendedCacheValue(isSlidingExpiration, ttl, valueBase64);
+
+                var extendedCacheValue = new ExtendedCacheValue(expirationTime, slidingTtl, valueBase64);
 
                 var metadata = new Dictionary<string, string>();
-
                 //A time-to-live of -1 means that the cache entry will never expire
-                if (ttl != -1)
-                {
-                    metadata.Add("ttlInSeconds", ttl.ToString());
-                }
+                metadata.Add("ttlInSeconds", cacheTtl.ToString());
 
                 await _client.SaveStateAsync(_options.StoreName, key, extendedCacheValue, null, metadata, token);
             }

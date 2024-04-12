@@ -1,17 +1,15 @@
-﻿using System.Diagnostics;
-
-namespace TonWinPkg.Extensions.Caching.Dapr
+﻿namespace TonWinPkg.Extensions.Caching.Dapr
 {
     internal struct ExtendedCacheValue
     {
-        public bool IsSlidingExpiration { get; set; }
-        public int TtlInSeconds { get; set; }
+        public DateTimeOffset? ExpirationTime { get; set; }
+        public int SlidingTtl { get; set; }
         public string ValueBase64 { get; set; }
 
-        internal ExtendedCacheValue(bool isSlidingExpiration, int ttlInSeconds, string valueBase64)
+        internal ExtendedCacheValue(DateTimeOffset? expirationTime, int slidingTtl, string valueBase64)
         {
-            IsSlidingExpiration = isSlidingExpiration;
-            TtlInSeconds = ttlInSeconds;
+            ExpirationTime = expirationTime;
+            SlidingTtl = slidingTtl;
             ValueBase64 = valueBase64;
         }
     }
