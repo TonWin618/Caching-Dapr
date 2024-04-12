@@ -14,9 +14,8 @@ namespace TonWinPkg.Extensions.Caching.Dapr.Shared
         /// <para>slidingTtl: when returning -1, it indicates that no sliding expiration time is set.</para>
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException">The absolute expiration value must be in the future.</exception>
-        internal static (int cacheTtl, DateTimeOffset? expirationTime, int slidingTtl) Calculate(DistributedCacheEntryOptions options)
+        internal static (int cacheTtl, DateTime? expirationTime, int slidingTtl) Calculate(DistributedCacheEntryOptions options)
         {
-            DateTimeOffset expirationTime =DateTime.UtcNow;
             int slidingTtl = -1;
             int absoluteTtl = -1;
 
@@ -26,26 +25,28 @@ namespace TonWinPkg.Extensions.Caching.Dapr.Shared
                 slidingTtl = (int)options.SlidingExpiration.Value.TotalSeconds;
             }
 
+            int absoluteTtlFirst = -1;
             //AbsoluteExpiration
             if (options.AbsoluteExpiration.HasValue)
             {
-                DateTimeOffset now = DateTimeOffset.UtcNow;
-                if (options.AbsoluteExpiration.HasValue && options.AbsoluteExpiration.Value.UtcDateTime <= now)
+                if (options.AbsoluteExpiration.Value.UtcDateTime <= DateTime.UtcNow)
                 {
                     throw new ArgumentOutOfRangeException(
                         nameof(DistributedCacheEntryOptions.AbsoluteExpiration),
                         options.AbsoluteExpiration.Value,
                         "The absolute expiration value must be in the future.");
                 }
-                absoluteTtl = (int)(options.AbsoluteExpiration.Value.UtcDateTime - now).TotalSeconds;
-
-                //AbsoluteExpirationRelativeToNow
-                if (options.AbsoluteExpirationRelativeToNow.HasValue)
-                {
-                    var temp = (int)options.AbsoluteExpirationRelativeToNow.Value.TotalSeconds;
-                    absoluteTtl = Math.Min(temp, absoluteTtl);
-                }
+                absoluteTtlFirst = (int)(options.AbsoluteExpiration.Value.UtcDateTime - DateTime.UtcNow).TotalSeconds;
             }
+
+            int absoluteTtlSecond = -1;
+            //AbsoluteExpirationRelativeToNow
+            if (options.AbsoluteExpirationRelativeToNow.HasValue)
+            {
+                absoluteTtlSecond = (int)options.AbsoluteExpirationRelativeToNow.Value.TotalSeconds;
+            }
+
+            absoluteTtl = Math.Max(absoluteTtlFirst, absoluteTtlSecond);
 
             //When the sliding expiration exceeds the absolute expiration, it becomes meaningless.
             if (absoluteTtl == -1 && slidingTtl == -1)
@@ -67,11 +68,12 @@ namespace TonWinPkg.Extensions.Caching.Dapr.Shared
             {
                 if(absoluteTtl > slidingTtl)
                 {
-                    return(slidingTtl, expirationTime.AddSeconds(absoluteTtl), slidingTtl);
+                    return(slidingTtl, DateTime.UtcNow.AddSeconds(absoluteTtl), slidingTtl);
                 }
                 else
                 {
-                    return(absoluteTtl, null, -1);
+                    //When the sliding expiration exceeds the absolute expiration, it becomes meaningless.
+                    return (absoluteTtl, null, -1);
                 }
             }
         }

@@ -73,9 +73,9 @@ namespace TonWinPkg.Extensions.Caching.Dapr
                 int cacheTtl = 0;
 
                 if(extendedValue.Value.ExpirationTime.HasValue 
-                    && extendedValue.Value.ExpirationTime > DateTimeOffset.UtcNow)
+                    && extendedValue.Value.ExpirationTime > DateTime.UtcNow)
                 {
-                    cacheTtl = (int)(extendedValue.Value.ExpirationTime - DateTimeOffset.UtcNow).Value.TotalSeconds;
+                    cacheTtl = (int)(extendedValue.Value.ExpirationTime - DateTime.UtcNow).Value.TotalSeconds;
                 }
 
                 cacheTtl = Math.Min(extendedValue.Value.SlidingTtl, cacheTtl);
@@ -160,6 +160,13 @@ namespace TonWinPkg.Extensions.Caching.Dapr
             {
                 //Adding extra information to the value of a cache entry.
                 var (cacheTtl,expirationTime, slidingTtl) = CacheTtlCalculateHelper.Calculate(options);
+
+                //No caching when ttl is 0
+                if (cacheTtl == 0)
+                {
+                    return;
+                }
+
                 string valueBase64 = Convert.ToBase64String(value);
 
                 var extendedCacheValue = new ExtendedCacheValue(expirationTime, slidingTtl, valueBase64);
