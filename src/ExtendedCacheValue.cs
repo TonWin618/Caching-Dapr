@@ -2,16 +2,16 @@
 {
     internal struct ExtendedCacheValue
     {
-        internal DateTime? ExpirationTime { get; set; } = default;
-        internal int SlidingTtl { get; set; } = default;
-        internal string ValueBase64 { get; set; } = "";
+        public DateTime? ExpirationTime { get; set; } = default;
+        public int SlidingTtl { get; set; } = default;
+        public string ValueBase64 { get; set; } = "";
 
-        public ExtendedCacheValue() 
+        public ExtendedCacheValue()
         {
 
         }
 
-        internal ExtendedCacheValue(DateTime? expirationTime, int slidingTtl, string valueBase64)
+        public ExtendedCacheValue(DateTime? expirationTime, int slidingTtl, string valueBase64)
         {
             ExpirationTime = expirationTime;
             SlidingTtl = slidingTtl;
