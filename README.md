@@ -25,6 +25,16 @@ Run the following command in the `test` directory:
 dapr run --app-id myapp --dapr-http-port 3500 dotnet test
 ```
 
+### Performance Comparison
+
+![performance_comparison](./img/performance_comparison.png)
+
+> Note: n*m represents n threads, each simultaneously looping through m operations. Each operation consists of one set, one get, and one remove. Each data item is 10kb.
+
+Dapr Implementation：https://www.nuget.org/packages/TonWinPkg.Extensions.Caching.Dapr/1.0.1-alpha
+
+Redis Implementation：https://www.nuget.org/packages/Microsoft.Extensions.Caching.StackExchangeRedis/8.0.4
+
 ### License
 
 This project is licensed under the terms of the MIT license.
