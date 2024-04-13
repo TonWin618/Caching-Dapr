@@ -14,7 +14,7 @@
     <RepositoryUrl>https://github.com/TonWin618/Caching-Dapr</RepositoryUrl>
     <RepositoryType></RepositoryType>
     <PackageTags>Dapr DistributedCache Caching Cache</PackageTags>
-    <Version>1.0.1-alpha</Version>
+    <Version>1.0.2-alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>
