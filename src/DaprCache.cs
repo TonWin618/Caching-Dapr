@@ -72,21 +72,26 @@ namespace TonWinPkg.Extensions.Caching.Dapr
             {
                 int cacheTtl = 0;
 
-                if(extendedValue.Value.ExpirationTime.HasValue 
-                    && extendedValue.Value.ExpirationTime > DateTime.UtcNow)
+                if(extendedValue.Value.ExpirationTime.HasValue)
                 {
-                    cacheTtl = (int)(extendedValue.Value.ExpirationTime - DateTime.UtcNow).Value.TotalSeconds;
+                    if (extendedValue.Value.ExpirationTime <= DateTime.UtcNow)
+                    {
+                        return realValue;
+                    }
+                    cacheTtl = (int)Math.Round((extendedValue.Value.ExpirationTime - DateTime.UtcNow).Value.TotalSeconds);
+                }
+                else
+                {
+                    cacheTtl = extendedValue.Value.SlidingTtl;
                 }
 
                 cacheTtl = Math.Min(extendedValue.Value.SlidingTtl, cacheTtl);
 
                 if(cacheTtl > 0)
                 {
-                    var options = new DistributedCacheEntryOptions()
-                    {
-                        SlidingExpiration = TimeSpan.FromSeconds(cacheTtl)
-                    };
-                    await SetAsync(key, Convert.FromBase64String(extendedValue.Value.ValueBase64), options, token);
+                    var metadata = new Dictionary<string, string>();
+                    metadata.Add("ttlInSeconds", cacheTtl.ToString());
+                    await _client.SaveStateAsync(_options.StoreName, key, extendedValue, null, metadata, token);
                 }
             }
 

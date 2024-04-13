@@ -4,7 +4,7 @@
     {
         internal DateTime? ExpirationTime { get; set; } = default;
         internal int SlidingTtl { get; set; } = default;
-        internal string? ValueBase64 { get; set; } = default;
+        internal string ValueBase64 { get; set; } = "";
 
         public ExtendedCacheValue() 
         {
